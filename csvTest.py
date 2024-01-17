@@ -36,7 +36,7 @@ def GradeMiddle(discipline):
     return Max'''
     return stat.median([int(student[discipline]) for student in students])
 
-#mode - критерий суммы по предметам
+#mode - критерий по предметам
 #      0 - все
 #      1 - Математика
 #      2 - ИСИС
@@ -52,7 +52,7 @@ def sortByGrades(mode, reverse = False):                     #сортировк
             for j in range(i + 1, len(studentsCopy)):
                 if SumGrades(studentsCopy[i]) > SumGrades(studentsCopy[j]):
                     studentsCopy[i],studentsCopy[j] = studentsCopy[j],studentsCopy[i]
-    elif mode > 0 and mode < 7:
+    elif mode > 0 and mode < len(disciplines):
         for i in range(len(students) - 1):
             for j in range(i + 1, len(students)):
                 if studentsCopy[i][disciplines[mode-1]] > studentsCopy[j][disciplines[mode-1]]:
@@ -73,7 +73,7 @@ def Middle(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if middle[1] in StudDrades: middle.append(student[keys[0]])
         return middle
-    elif mode > 0 and mode < 7:
+    elif mode > 0 and mode < len(disciplines):
         middle = [disciplines[mode-1],GradeMiddle(disciplines[mode-1])]
         for student in students:
             if middle[1] == int(student[middle[0]]): middle.append(student[keys[0]])
@@ -89,7 +89,7 @@ def Min(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if Min[1] in StudDrades: Min.append(student[keys[0]])
         return Min
-    elif mode > 0 and mode < 7:
+    elif mode > 0 and mode < len(disciplines):
         Min = [disciplines[mode-1],GradeMin(disciplines[mode-1])]
         for student in students:
             if Min[1] == int(student[Min[0]]): Min.append(student[keys[0]])
@@ -105,7 +105,7 @@ def Max(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if Max[1] in StudDrades: Max.append(student[keys[0]])
         return Max
-    elif mode > 0 and mode < 7:
+    elif mode > 0 and mode < len(disciplines):
         Max = [disciplines[mode-1],GradeMax(disciplines[mode-1])]
         for student in students:
             if Max[1] == int(student[Max[0]]): Max.append(student[keys[0]])
@@ -121,7 +121,7 @@ def Moda(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if moda[1] in StudDrades: moda.append(student[keys[0]])
         return moda
-    elif mode > 0 and mode < 7:
+    elif mode > 0 and mode < len(disciplines):
         moda = [disciplines[mode-1],GradeModa(disciplines[mode-1])]
         for student in students:
             if moda[1] == int(student[moda[0]]): moda.append(student[keys[0]])
