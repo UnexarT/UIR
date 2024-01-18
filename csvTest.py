@@ -1,9 +1,7 @@
 import csv
 import statistics as stat
 
-students = []
-
-with open('studentsInfo.csv') as csvfile:
+with open('firstSem.csv') as csvfile:
     students = [row for row in csv.DictReader(csvfile)]
 
 keys = list(students[0])
@@ -12,28 +10,19 @@ disciplines = keys[1:]
 def SumGrades(student):
     return sum([int(student[discipline]) for discipline in disciplines])
 
+def StudentMean(student):
+    return round(sum([int(student[discipline]) for discipline in disciplines])/len(disciplines),2)
+
 def GradeModa(discipline):
-    '''moda = {}
-    moda[discipline] = stat.mode([int(student[discipline]) for student in students])
-    return moda'''
     return stat.mode([int(student[discipline]) for student in students])
 
 def GradeMax(discipline):
-    '''Max = {}
-    Max[discipline] = max([int(student[discipline]) for student in students])
-    return Max'''
     return max([int(student[discipline]) for student in students])
 
 def GradeMin(discipline):
-    '''Min = {}
-    Min[discipline] = min([int(student[discipline]) for student in students])
-    return Min'''
     return min([int(student[discipline]) for student in students])
 
 def GradeMiddle(discipline):
-    '''Max = {}
-    middle[discipline] = stat.median([int(student[discipline]) for student in students])
-    return Max'''
     return stat.median([int(student[discipline]) for student in students])
 
 #mode - критерий по предметам
@@ -45,6 +34,30 @@ def GradeMiddle(discipline):
 #      5 - ЯПМТ
 #      6 - Курсовая по ЯПМТ
 
+#среднее арифметическое/оценки по дисциплине, выводит список, 1 индексом строку названия mode
+#   при выборе mode 0 - по группе, выводит с 1 индекса список вида [ФИО,число]
+#   при выборе mode > 1 - по предмету, выводит 1 индексом среднее арифметическое/оценки по дисциплине
+
+def ArithmeticMean(mode, sortStud = students):
+    if mode == 0:
+        grades = [[student[keys[0]],StudentMean(student)] for student in sortStud]
+        return ['По всем'] + grades
+    elif mode > 0 and mode <= len(disciplines):
+        grades = [int(student[disciplines[mode - 1]]) for student in sortStud]
+        return [disciplines[mode - 1], round(sum(grades)/len(students),2)]
+    else:
+        print("Абасрался чухан")
+
+def DisciplineGrades(mode, sortStud = students):
+    if mode == 0:
+        grades = [[student[keys[0]],student[discipline]] for student in sortStud for discipline in disciplines]
+        return ['По всем'] + grades
+    elif mode > 0 and mode <= len(disciplines):
+        grades = [[student[keys[0]],student[disciplines[mode - 1]]] for student in sortStud]
+        return [disciplines[mode - 1]] + grades
+    else:
+        print("Абасрался чухан")
+
 def sortByGrades(mode, reverse = False):                     #сортировка Пузырьком
     studentsCopy = students.copy()
     if mode == 0:
@@ -52,7 +65,7 @@ def sortByGrades(mode, reverse = False):                     #сортировк
             for j in range(i + 1, len(studentsCopy)):
                 if SumGrades(studentsCopy[i]) > SumGrades(studentsCopy[j]):
                     studentsCopy[i],studentsCopy[j] = studentsCopy[j],studentsCopy[i]
-    elif mode > 0 and mode < len(disciplines):
+    elif mode > 0 and mode <= len(disciplines):
         for i in range(len(students) - 1):
             for j in range(i + 1, len(students)):
                 if studentsCopy[i][disciplines[mode-1]] > studentsCopy[j][disciplines[mode-1]]:
@@ -73,7 +86,7 @@ def Middle(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if middle[1] in StudDrades: middle.append(student[keys[0]])
         return middle
-    elif mode > 0 and mode < len(disciplines):
+    elif mode > 0 and mode <= len(disciplines):
         middle = [disciplines[mode-1],GradeMiddle(disciplines[mode-1])]
         for student in students:
             if middle[1] == int(student[middle[0]]): middle.append(student[keys[0]])
@@ -89,7 +102,7 @@ def Min(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if Min[1] in StudDrades: Min.append(student[keys[0]])
         return Min
-    elif mode > 0 and mode < len(disciplines):
+    elif mode > 0 and mode <= len(disciplines):
         Min = [disciplines[mode-1],GradeMin(disciplines[mode-1])]
         for student in students:
             if Min[1] == int(student[Min[0]]): Min.append(student[keys[0]])
@@ -105,7 +118,7 @@ def Max(mode):
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if Max[1] in StudDrades: Max.append(student[keys[0]])
         return Max
-    elif mode > 0 and mode < len(disciplines):
+    elif mode > 0 and mode <= len(disciplines):
         Max = [disciplines[mode-1],GradeMax(disciplines[mode-1])]
         for student in students:
             if Max[1] == int(student[Max[0]]): Max.append(student[keys[0]])
@@ -115,19 +128,22 @@ def Max(mode):
 
 def Moda(mode):
     if mode == 0:
-        grades = [GradeModa(discipline)[discipline] for discipline in disciplines]
+        grades = [GradeModa(discipline) for discipline in disciplines]
         moda = ['По всем',stat.mode(grades)]
         for student in students:
             StudDrades = [int(student[discipline]) for discipline in disciplines]
             if moda[1] in StudDrades: moda.append(student[keys[0]])
         return moda
-    elif mode > 0 and mode < len(disciplines):
+    elif mode > 0 and mode <= len(disciplines):
         moda = [disciplines[mode-1],GradeModa(disciplines[mode-1])]
         for student in students:
             if moda[1] == int(student[moda[0]]): moda.append(student[keys[0]])
         return moda
     else:
         print("Абасрался чухан")
-print(Middle(2))
 
-
+for i in ArithmeticMean(0):
+    print(i)
+print()
+for i in ArithmeticMean(0, sortByGrades(0, True)):
+    print(i)
